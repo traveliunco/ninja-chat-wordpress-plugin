@@ -1,0 +1,300 @@
+
+.whatsapp-widget {
+    position: fixed;
+    z-index: 999999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    direction: rtl;
+}
+
+.whatsapp-widget.bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+
+.whatsapp-widget.bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+.whatsapp-widget.top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.whatsapp-widget.top-left {
+    top: 20px;
+    left: 20px;
+}
+
+.whatsapp-button {
+    background: #25d366;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.whatsapp-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.whatsapp-chat-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    max-height: 500px;
+}
+
+.chat-header {
+    background: #25d366;
+    color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-text h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-text p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.welcome-message {
+    background: #e8f5e8;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.message-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.message-icon {
+    width: 32px;
+    height: 32px;
+    background: #25d366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.message-text p {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.message-time {
+    font-size: 11px;
+    color: #666;
+}
+
+.agents-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.agent-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 12px;
+}
+
+.agent-item:hover:not(.offline) {
+    background: #f5f5f5;
+}
+
+.agent-item.offline {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.agent-avatar {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.online-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: #25d366;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.agent-info {
+    flex: 1;
+}
+
+.agent-info h4 {
+    margin: 0 0 2px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.agent-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.agent-status {
+    flex-shrink: 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.online {
+    background: #e8f5e8;
+    color: #25d366;
+}
+
+.status-badge.offline {
+    background: #f0f0f0;
+    color: #999;
+}
+
+.chat-footer {
+    background: #f8f8f8;
+    padding: 8px 16px;
+    text-align: center;
+    border-top: 1px solid #eee;
+}
+
+.chat-footer p {
+    margin: 0;
+    font-size: 10px;
+    color: #999;
+}
+
+/* استجابة للشاشات الصغيرة */
+@media (max-width: 480px) {
+    .whatsapp-chat-window {
+        width: calc(100vw - 40px);
+        right: -10px;
+    }
+}
+
+/* إخفاء شريط التمرير في بعض المتصفحات */
+.agents-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.agents-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.agents-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+.agents-list::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
