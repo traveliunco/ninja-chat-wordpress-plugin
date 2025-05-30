@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Trash2, MessageCircle, Settings, Users, Eye, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import JSZip from 'jszip';
 
 interface WhatsAppAgent {
   id: string;
@@ -56,7 +57,7 @@ const Admin = () => {
 
   const downloadPlugin = () => {
     // إنشاء ملفات الإضافة
-    const pluginFiles = {
+    const pluginFiles: { [key: string]: string } = {
       'whatsapp-widget-pro.php': `<?php
 /**
  * Plugin Name: WhatsApp Widget Pro
@@ -221,7 +222,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Installation ==
 
-1. ارفع ملفات الإضافة إلى مجلد `/wp-content/plugins/whatsapp-widget-pro/`
+1. ارفع ملفات الإضافة إلى مجلد '/wp-content/plugins/whatsapp-widget-pro/'
 2. فعل الإضافة من خلال قائمة 'الإضافات' في ووردبريس
 3. اذهب إلى الإعدادات > WhatsApp Widget لإعداد الإضافة
 
