@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Plugin Name: WhatsApp Widget Pro
@@ -35,6 +34,7 @@ class WhatsAppWidgetPro {
         add_action('wp_footer', array($this, 'render_widget'));
         add_action('admin_menu', array($this, 'admin_menu'));
         add_action('admin_init', array($this, 'admin_init'));
+        add_action('wp_ajax_download_whatsapp_widget', array($this, 'download_plugin'));
         register_activation_hook(__FILE__, array($this, 'activate'));
     }
     
@@ -136,7 +136,111 @@ class WhatsAppWidgetPro {
     
     public function admin_page() {
         $options = get_option('whatsapp_widget_options');
+        
+        // معالجة تحميل الإضافة
+        if (isset($_POST['download_plugin']) && wp_verify_nonce($_POST['download_nonce'], 'download_plugin_nonce')) {
+            $this->create_plugin_download();
+            return;
+        }
+        
         include_once WWP_PLUGIN_PATH . 'admin/admin-page.php';
+    }
+    
+    public function download_plugin() {
+        // التحقق من الصلاحيات
+        if (!current_user_can('manage_options')) {
+            wp_die('غير مصرح لك بهذا الإجراء');
+        }
+        
+        check_ajax_referer('download_plugin_nonce', 'nonce');
+        
+        $this->create_plugin_download();
+    }
+    
+    private function create_plugin_download() {
+        // إنشاء مجلد مؤقت
+        $temp_dir = wp_upload_dir()['basedir'] . '/whatsapp-widget-temp/';
+        $plugin_dir = $temp_dir . 'whatsapp-widget-pro/';
+        
+        // إنشاء المجلدات
+        wp_mkdir_p($plugin_dir);
+        wp_mkdir_p($plugin_dir . 'admin/');
+        wp_mkdir_p($plugin_dir . 'assets/');
+        wp_mkdir_p($plugin_dir . 'languages/');
+        
+        // نسخ الملفات
+        $files = array(
+            'whatsapp-widget-pro.php' => WWP_PLUGIN_PATH . 'whatsapp-widget-pro.php',
+            'readme.txt' => WWP_PLUGIN_PATH . 'readme.txt',
+            'uninstall.php' => WWP_PLUGIN_PATH . 'uninstall.php',
+            'admin/admin-page.php' => WWP_PLUGIN_PATH . 'admin/admin-page.php',
+            'assets/widget.js' => WWP_PLUGIN_PATH . 'assets/widget.js',
+            'assets/widget.css' => WWP_PLUGIN_PATH . 'assets/widget.css',
+            'languages/whatsapp-widget-pro-ar.po' => WWP_PLUGIN_PATH . 'languages/whatsapp-widget-pro-ar.po'
+        );
+        
+        foreach ($files as $dest => $source) {
+            if (file_exists($source)) {
+                copy($source, $plugin_dir . $dest);
+            }
+        }
+        
+        // إنشاء ملف zip
+        $zip_file = $temp_dir . 'whatsapp-widget-pro-v' . WWP_VERSION . '.zip';
+        
+        if (class_exists('ZipArchive')) {
+            $zip = new ZipArchive();
+            if ($zip->open($zip_file, ZipArchive::CREATE) === TRUE) {
+                $this->add_directory_to_zip($zip, $plugin_dir, 'whatsapp-widget-pro/');
+                $zip->close();
+                
+                // تحميل الملف
+                header('Content-Type: application/zip');
+                header('Content-Disposition: attachment; filename="whatsapp-widget-pro-v' . WWP_VERSION . '.zip"');
+                header('Content-Length: ' . filesize($zip_file));
+                readfile($zip_file);
+                
+                // تنظيف الملفات المؤقتة
+                $this->delete_directory($temp_dir);
+                exit;
+            }
+        }
+        
+        wp_die('خطأ في إنشاء ملف التحميل');
+    }
+    
+    private function add_directory_to_zip($zip, $dir, $base) {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                $file_path = $dir . $file;
+                $zip_path = $base . $file;
+                
+                if (is_dir($file_path)) {
+                    $zip->addEmptyDir($zip_path);
+                    $this->add_directory_to_zip($zip, $file_path . '/', $zip_path . '/');
+                } else {
+                    $zip->addFile($file_path, $zip_path);
+                }
+            }
+        }
+    }
+    
+    private function delete_directory($dir) {
+        if (!is_dir($dir)) return;
+        
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file != '.' && $file != '..') {
+                $file_path = $dir . $file;
+                if (is_dir($file_path)) {
+                    $this->delete_directory($file_path . '/');
+                } else {
+                    unlink($file_path);
+                }
+            }
+        }
+        rmdir($dir);
     }
 }
 
