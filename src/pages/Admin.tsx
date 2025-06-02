@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,13 +56,55 @@ const Admin = () => {
   });
 
   const downloadPlugin = () => {
-    // إنشاء ملف zip افتراضي للتحميل
-    const zipContent = "UEsDBAoAAAAAAO5QT1cAAAAAAAAAAAAAAAAJAAAAd2hhdHNhcHAtd2lkZ2V0LXByby9QSwMEFAAAAAgA7lBPVwAAAAA=";
-    const blob = new Blob([atob(zipContent)], { type: 'application/zip' });
+    // إنشاء محتوى ملف الإضافة
+    const pluginContent = `<?php
+/**
+ * Plugin Name: WhatsApp Widget Pro
+ * Description: إضافة ووردبريس لعرض ويدجت WhatsApp
+ * Version: 1.0.0
+ * Author: Your Name
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// كود الإضافة الأساسي
+class WhatsAppWidgetPro {
+    public function __construct() {
+        add_action('wp_footer', array($this, 'display_widget'));
+        add_action('admin_menu', array($this, 'admin_menu'));
+    }
+    
+    public function display_widget() {
+        // عرض الويدجت
+        echo '<div id="whatsapp-widget">Widget Content</div>';
+    }
+    
+    public function admin_menu() {
+        add_menu_page(
+            'WhatsApp Widget',
+            'WhatsApp Widget',
+            'manage_options',
+            'whatsapp-widget',
+            array($this, 'admin_page')
+        );
+    }
+    
+    public function admin_page() {
+        echo '<h1>WhatsApp Widget Settings</h1>';
+    }
+}
+
+new WhatsAppWidgetPro();
+?>`;
+
+    // إنشاء وتحميل الملف
+    const blob = new Blob([pluginContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'whatsapp-widget-pro-v1.0.0.zip';
+    a.download = 'whatsapp-widget-pro.php';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -164,7 +207,7 @@ const Admin = () => {
             <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
               <div>
                 <h3 className="font-medium text-blue-900">WhatsApp Widget Pro v1.0.0</h3>
-                <p className="text-sm text-blue-700">ملف zip جاهز للتثبيت في ووردبريس</p>
+                <p className="text-sm text-blue-700">ملف PHP جاهز للتثبيت في ووردبريس</p>
               </div>
               <Button onClick={downloadPlugin} className="bg-blue-500 hover:bg-blue-600">
                 <Download className="h-4 w-4 mr-2" />
